@@ -4,6 +4,11 @@ from django.conf import settings
 """
 A boolean that allow Flow app debug printing
 """
+FLOW_DISCONNECTED_ENABLED = bool(int(getattr(settings, 'FLOW_DISCONNECTED_ENABLED', "0")))
+
+"""
+A boolean that allow Flow app debug printing
+"""
 FLOW_DEBUG = bool(int(getattr(settings, 'FLOW_DEBUG', "1")))
 
 """

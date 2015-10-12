@@ -20,6 +20,7 @@ for signal_module in settings.FLOW_SIGNALS:
                "(Is it on sys.path? Does it have syntax errors?):"
                 "%s" % (signal_module, e))
 
+############## Receive a message from a user
 
 class Subscriber(RedisSubscriber):
     """
@@ -51,7 +52,6 @@ def dispatch(user_pk, data, **kwargs):
     """
     Dispatch user data messages to receivers signals set at FLOW_SIGNALS
     """
-    print user_pk, data
     if isinstance(data, dict):
 
         type = data.get('type', '')
@@ -72,6 +72,13 @@ def dispatch(user_pk, data, **kwargs):
             debug_traceback('unknow data type : ', data, [user_pk], to=False, success=False)
 
 
+
+
+
+
+
+##############  Send a message to a user
+
 class Publisher(RedisPublisher):
     """
     Customised RedisPublisher class for flow app, used by the websocket code to write on subscribed channels
@@ -86,7 +93,6 @@ def send(type, data={}, users=None):
     """
     typed_data = {
         'type': type,
-        #'from': 'PY',
         'data': data
     }
 
@@ -104,6 +110,18 @@ def send(type, data={}, users=None):
     message = RedisMessage(typed_data)
     publisher.publish_message(message)
 
+"""
+    Indirect receiver from disconnected mode
+"""
+def disconnected_receive(request):
+
+    facility = 'flow'
+    publisher = Publisher(facility=facility)
+    message = publisher.fetch_disconnected_message(request, facility=facility)
+    yield message
+
+    # if settings.FLOW_DEBUG:
+    #     debug_traceback('disconnected', message, message, type=type, to=True, success=True)
 
 
 
@@ -122,3 +140,6 @@ def debug_traceback(msg, data, user_pks, success=True, to=False, type=None):
     message += "\033[1;36m" + "\033[0m \033[1;36m".join([(user.email) for user in users]) + endc
     print '\t' + message
     print c + '---- ' + endc
+
+
+

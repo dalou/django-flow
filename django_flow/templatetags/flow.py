@@ -22,6 +22,7 @@ def flow_init(context):
         'FLOW_DEBUG': settings.FLOW_DEBUG,
         'FLOW_ACTIVITY_DELAY': settings.FLOW_ACTIVITY_DELAY,
         'FLOW_INITIAL_URL': settings.FLOW_INITIAL_URL,
+        'FLOW_DISCONNECTED_ENABLED': settings.FLOW_DISCONNECTED_ENABLED,
     })
     return context
 

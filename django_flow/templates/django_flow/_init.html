@@ -4,6 +4,9 @@
         window.STATIC_URL = "{{ STATIC_URL }}";
         window.FLOW_DEBUG = {{ FLOW_DEBUG|yesno:"true,false" }};
         window.FLOW_INITIAL_URL = "{{ FLOW_INITIAL_URL }}";
+        window.FLOW_DISCONNECTED_ENABLED = {{ FLOW_DISCONNECTED_ENABLED|yesno:"true,false" }};
+        window.FLOW_DISCONNECTED_RECEIVE_URL = "{% url 'django_flow_disconnected_receive' %}";
+        window.FLOW_DISCONNECTED_SEND_URL = "{% url 'django_flow_disconnected_send' %}";
         window.FLOW_ACTIVITY_DELAY = {{ FLOW_ACTIVITY_DELAY }};
         window.FLOW_SELF_PK = {{ request.user.pk }};
         window.FLOW_WS_HEARTBEAT = {{ FLOW_WS_HEARTBEAT }};
