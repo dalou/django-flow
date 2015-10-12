@@ -1,0 +1,16 @@
+{% load compress %}
+{% compress js %}
+    <script type="text/javascript">
+        window.STATIC_URL = "{{ STATIC_URL }}";
+        window.FLOW_DEBUG = {{ FLOW_DEBUG|yesno:"true,false" }};
+        window.FLOW_INITIAL_URL = "{{ FLOW_INITIAL_URL }}";
+        window.FLOW_ACTIVITY_DELAY = {{ FLOW_ACTIVITY_DELAY }};
+        window.FLOW_SELF_PK = {{ request.user.pk }};
+        window.FLOW_WS_HEARTBEAT = {{ FLOW_WS_HEARTBEAT }};
+        window.FLOW_WS_URI = "{{ FLOW_WS_URI }}";
+        window.FLOW_WS_ENABLED = {{ FLOW_WS_ENABLED|yesno:"true,false" }};
+    </script>
+    <script type="text/javascript" src="{{ STATIC_URL }}django_flow/ws_redis.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}django_flow/flow.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}django_flow/activity.js"></script>
+{% endcompress %}

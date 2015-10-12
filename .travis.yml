@@ -1,0 +1,17 @@
+language: python
+before_install:
+- sudo apt-get update
+install:
+- pip install -q -e .
+python:
+- '2.7'
+script:
+- python runtests.py
+deploy:
+  provider: pypi
+  user: dalou
+  password:
+    secure: VSTn5roNT/gUjNezsqlz/GcmcRySvrELKN3Qz/j9zxIETRxHbQH6zdbneeGl74GJgu+L95vthDl7g+fhwjU86DyS0KdtxKg/afbuYbcJS3EfVo8jw96POmm/WTp7oRMl28bAXYy05rRBnZ162oL/KccgIA9beEjwe9gKdoX3LPPR3kFiAXqyOULibawfZ6vhmzsC8a7h//hrp2s/aNaSPmkCo3L6s1BJS50r5yjzaBLnYIvHmnKgf/87qGMC+Bou79XbdybQmH22DYSBZ+W1MIa617XWww3GH6ST5xOmLZBeOoaZjmJjIZathBeOyhHDFcnVWLcB8fYEq8iN9ELNH3Ecq1/XdPYEdDrItJbRsQrSMQMXddpnwmCkWe36nXt+hcIwdJYuDAhPESPTdnnRAQ2Td9zpayP0xSGNRIhgBa5Oc9gGH3hVMAd9K9C91FfPMPb++ejR1DvP2/MsL2Zb9WPJ/OyYqGZlZm0DJ3ppMHQ6xwiHpmn5uxAecn1n7GQZCmqhLF669PGEzqRKDbxYjzRAF39ADak090Zlrc5UZPohx/a6gSJhKEN04znDMUQY+se/xuRvncVO7bsRSNnUyKgwBsHr4Npf2xGP/6z6cI+hv/NycEnFGZbsKUo6ipCoFjfiX8hR6DBLnm+Y4HVIbz4D+D6bi4owZEGbkpammCs=
+  on:
+    branch: all_branches
+    tags: true

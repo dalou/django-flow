@@ -1,0 +1,1 @@
+django-flow was written by Damien Autrusseau <autrusseau.damien@gmail.com>
