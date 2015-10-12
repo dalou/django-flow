@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import logging
+import json
 
 from django.apps import apps
 from django.conf import settings
@@ -9,7 +10,7 @@ from django.http import JsonResponse
 
 logger = logging.getLogger(__name__)
 
-
+from .pipe import dispatch, send,  disconnected_receive, debug_traceback
 
 class Load(generic.View):
 
@@ -59,3 +60,48 @@ class InitialsJson(generic.View):
         raise NotImplementedError("""
             Not implemented
         """)
+
+
+"""
+    Message receive from js GET (disconnected mode)
+    Flush redis store
+"""
+class DisconnectedReceive(generic.View):
+
+    def get(self, request, *args, **kwargs):
+        self.request = request
+        user = request.user
+        if not (user.is_authenticated()):
+            raise Http404
+
+        flow = []
+        for message in disconnected_receive(request):
+            flow.append(message)
+        return JsonResponse(flow, safe=False)
+
+"""
+    Message send from js GET (disconnected mode)
+"""
+class DisconnectedSend(DisconnectedReceive):
+
+    def get(self, request, *args, **kwargs):
+        self.request = request
+        user = request.user
+        if not (user.is_authenticated()):
+            raise Http404
+
+        data = json.loads(request.GET.get('msg'))
+        dispatch(user.pk, data)
+
+        return super(DisconnectedSend, self).get(request, *args, **kwargs)
+
+
+
+
+
+
+
+
+
+
+

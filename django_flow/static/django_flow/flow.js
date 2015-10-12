@@ -16,6 +16,9 @@ var flow =
     _listeners: {},
     DEBUG: window.FLOW_DEBUG,
     INITIAL_URL: window.FLOW_INITIAL_URL,
+    DISCONNECTED_ENABLED: window.FLOW_DISCONNECTED_ENABLED,
+    DISCONNECTED_RECEIVE_URL: window.FLOW_DISCONNECTED_RECEIVE_URL,
+    DISCONNECTED_SEND_URL: window.FLOW_DISCONNECTED_SEND_URL,
     WS_ENABLED: window.FLOW_WS_ENABLED,
     WS_URI: window.FLOW_WS_URI,
     WS_HEARTBEAT: window.FLOW_WS_HEARTBEAT,
@@ -68,7 +71,7 @@ var flow =
     _connect: function(self)
     {
         self = this;
-        if(self.WS_ENABLED)
+        if(self.WS_ENABLED && self.WS_URI)
         {
             self = this;
             self._redis_ws = RedisWebSocket(
@@ -94,6 +97,17 @@ var flow =
             {
                 console.log('%c FLOW websocket is disabled ', 'color: #550000');
             }
+            if(self.DISCONNECTED_ENABLED)
+            {
+                self._disconnected_receive(2000);
+            }
+            else
+            {
+                if(self.DEBUG)
+                {
+                    console.log('%c FLOW disconnected is disabled ', 'color: #550000');
+                }
+            }
         }
     },
     on: function(type, fct)
@@ -109,43 +123,71 @@ var flow =
             listeners.push(fct);
         }
     },
+    _disconnected_send: function(msg)
+    {
+        self = this;
+        if(self.DISCONNECTED_ENABLED && self.DISCONNECTED_SEND_URL)
+        {
+            $.get(self.DISCONNECTED_SEND_URL, {msg:msg}, function(wsdata)
+            {
+                for(var i in wsdata)
+                {
+                    self._receive(wsdata[i]);
+                }
+            });
+        }
+    },
     send: function(type, data)
     {
-        if(this._connected && this._redis_ws) {
-            var typed_data = {}
-            typed_data.type = type;
-            typed_data.from = "js"
-            typed_data.data = data
-            var msg = JSON.stringify(typed_data);
+        var typed_data = {}
+        typed_data.type = type;
+        typed_data.from = "js"
+        typed_data.data = data
+        var msg = JSON.stringify(typed_data);
+        if(this._connected && this._redis_ws)
+        {
             if(this.DEBUG)
             {
                 console.log('%c SEND ', 'background: #222; color: #bada55', typed_data);
             }
             this._redis_ws.send_message(msg);
         }
-    },
-    _get_or_create_i: 1,
-    _get_or_create_rand: Math.floor(Math.random() * 999999999999),
-    get_or_create: function(id, element) {
-        var $element = $('#'+ id);
-        if(!$element.length)
+        else
         {
-            $element = element();
-            if(!$element)
-            {
-                $element = $.noop();
-            }
-            else
-            {
-                $element.attr('id', id);
-            }
+            self._disconnected_send(msg);
         }
-        return $element;
+    },
+    _disconnected_receive_timeout: null,
+    _disconnected_receive: function(timeout)
+    {
+        self = this;
+        console.log(timeout);
+        if(self.DISCONNECTED_ENABLED && self.DISCONNECTED_RECEIVE_URL)
+        {
+            if(self._disconnected_receive_timeout)
+            {
+                clearTimeout(self._disconnected_receive_timeout);
+            }
+            self._disconnected_receive_timeout = setTimeout(function()
+            {
+                if(flow.is_active())
+                {
+                    $.get(self.DISCONNECTED_RECEIVE_URL, null, function(wsdata)
+                    {
+                        for(var i in wsdata)
+                        {
+                            self._receive(wsdata[i]);
+                        }
+                    });
+                    self._disconnected_receive(flow.is_focused() ? 5000 : 20000);
+                }
+            }, timeout);
+        }
     },
     _receive: function(msg)
     {
         var data = JSON.parse(msg);
-        if(data.from != "js")
+        if(data && data.from != "js")
         {
             if(self.DEBUG)
             {

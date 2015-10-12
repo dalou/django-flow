@@ -1,0 +1,13 @@
+build
+
+dist
+MANIFEST
+*.sublime-workspace
+*.py[cod]
+*.egg-info
+*.egg
+docs/_build/
+.sass-cache
+.coverage
+.tox
+.log
