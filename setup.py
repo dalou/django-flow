@@ -22,7 +22,10 @@ def find_version(*parts):
         # NOT RAN LOCALY
         pass
 
-    version_git = open(version_py, 'rb').read().strip().split('=')[-1].replace('"','')
+    if not os.path.exists(version_py):
+        version_git = open(version_py, 'rb').read().strip().split('=')[-1].replace('"','')
+    else:
+        version_git = "1.0.0"
     return "{ver}".format(ver=version_git)
 
 def read(*parts):
@@ -40,7 +43,7 @@ standard_exclude_directories = ('.*', 'CVS', '_darcs', './build',
 
 setup(
     name='django-flow',
-    version=find_version(),
+    version="1.0.1",
     description='Django flow',
     long_description=read('README.rst'),
     author='Autrusseau Damien',
