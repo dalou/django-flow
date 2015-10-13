@@ -43,7 +43,7 @@ standard_exclude_directories = ('.*', 'CVS', '_darcs', './build',
 
 setup(
     name='django-flow',
-    version="1.0.2",
+    version="1.0.3",
     description='Django flow',
     long_description=read('README.rst'),
     author='Autrusseau Damien',
