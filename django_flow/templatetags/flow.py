@@ -10,12 +10,14 @@ register = template.Library()
 from ..models import *
 
 @register.inclusion_tag('django_flow/_init.html', takes_context=True)
-def flow_init(context):
+def flow_init(context, auto_connect=False):
     request = context['request']
     protocol = request.is_secure() and 'wss://' or 'ws://'
+    print settings
     heartbeat_msg = settings.FLOW_WS_HEARTBEAT and '"{0}"'.format(settings.FLOW_WS_HEARTBEAT) or 'null'
     context.update({
         'STATIC_URL': settings.settings.STATIC_URL,
+        'FLOW_AUTO_CONNECT': auto_connect,
         'FLOW_WS_HEARTBEAT': mark_safe(heartbeat_msg),
         'FLOW_WS_URI': protocol + request.get_host() + settings.FLOW_WS_URL,
         'FLOW_WS_ENABLED': settings.FLOW_WS_ENABLED,

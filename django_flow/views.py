@@ -11,6 +11,7 @@ from django.http import JsonResponse
 logger = logging.getLogger(__name__)
 
 from .pipe import dispatch, send,  disconnected_receive, debug_traceback
+from .models import StaffNotification
 
 class Load(generic.View):
 
@@ -97,6 +98,24 @@ class DisconnectedSend(DisconnectedReceive):
 
 
 
+
+class AdminDashboard(generic.TemplateView):
+
+    template_name = "django_flow/admin/dashboard.html"
+
+
+class AdminInitials(InitialsJson):
+
+    def get(self, request, *args, **kwargs):
+        if not (request.user.is_staff):
+            raise Http404
+        else:
+            return super(AdminInitials, self).get(request, *args, **kwargs)
+
+    def get_initials(self):
+
+        for staff_notification in StaffNotification.objects.all()[0:100]:
+            yield 'staff_notification_initial', staff_notification.to_json()
 
 
 

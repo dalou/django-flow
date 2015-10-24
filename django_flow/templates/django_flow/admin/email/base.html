@@ -1,0 +1,36 @@
+<div dir="ltr" style=" padding:20px 10px;">
+    {% block header %}
+    <div style="text-align:center; border-bottom: 4px solid rgb(224, 201, 22); padding:10px 15px;" >
+        <i>
+            <b>
+                <font face="verdana, sans-serif" size="4">
+                    <p style="text-transform:uppercase;color:rgb(0, 0, 0);font-size:15px;line-height:14px;text-align:left;">
+                        {% block title %}{% endblock title %}
+                    </p>
+                </font>
+            </b>
+        </i>
+    </div>
+    {% endblock header %}
+    <div style="text-align:justify;padding:36px 0px;">
+        <font face="verdana, sans-serif" size="4">
+            <p style="color:rgb(104, 104, 104);font-size:13px;line-height:14px;text-align:left;">
+                {% block content %}{% endblock content %}
+            </p>
+        </font>
+    </div>
+    <div style="text-align:left;">
+        <font face="verdana, sans-serif">
+            <p style="color: rgb(104, 104, 104);font-size: 14px;line-height:14px;text-align:left;">
+                {% block footer %}{% endblock footer %}
+
+                {% block footer_bis %}
+                Cordialement,<br />
+
+                {% endblock footer_bis %}
+            </p>
+        </font>
+    </div>
+</div>
+<div dir="ltr" style=" padding:0px 0px;">
+</div>

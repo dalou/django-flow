@@ -14,6 +14,7 @@ var flow =
     _connected: false,
     _focus: false,
     _listeners: {},
+    AUTO_CONNECT: window.FLOW_AUTO_CONNECT,
     DEBUG: window.FLOW_DEBUG,
     INITIAL_URL: window.FLOW_INITIAL_URL,
     DISCONNECTED_ENABLED: window.FLOW_DISCONNECTED_ENABLED,
@@ -25,7 +26,7 @@ var flow =
     _redis_ws: null,
     _builtin_notification: window.Notification || window.mozNotification || window.webkitNotification,
 
-    _init: function(self)
+    _init: function(self, url)
     {
         self = this;
         if(!self._ready)
@@ -33,9 +34,9 @@ var flow =
             self._ready = true;
             self._dispatch('flow_ready');
 
-            if(self.INITIAL_URL)
+            if(url)
             {
-                $.get(self.INITIAL_URL, null, function(wsdata)
+                $.get(url, null, function(wsdata)
                 {
                     //console.log(wsdata)
                     for( var i in wsdata)
@@ -49,7 +50,10 @@ var flow =
                     }
                     self._loaded = true;
                     self._dispatch('flow_loaded');
-                    self._connect();
+                    if(self.AUTO_CONNECT)
+                    {
+                        self._connect();
+                    }
                 });
             }
             else
@@ -57,7 +61,10 @@ var flow =
                 self._loaded = true;
                 self._dispatch('flow_loaded');
                 self._dispatch('flow_no_inital');
-                self._connect();
+                if(self.AUTO_CONNECT)
+                {
+                    self._connect();
+                }
                 if(self.DEBUG)
                 {
                     console.log('%c FLOW has no INITIAL_URL', 'color: #550000');
@@ -66,6 +73,30 @@ var flow =
             }
 
 
+        }
+    },
+    load_data: function(url)
+    {
+        $.get(url, null, function(wsdata)
+        {
+            //console.log(wsdata)
+            for( var i in wsdata)
+            {
+                var data = wsdata[i];
+                if(self.DEBUG)
+                {
+                    console.log('%c INITIAL ', data.type, 'background: #B1D3D4; color: #222', data.data);
+                }
+                self._dispatch(data.type, data.data);
+            }
+        });
+    },
+    connect: function(self)
+    {
+        self = this;
+        if(!self._redis_ws)
+        {
+            self._connect();
         }
     },
     _connect: function(self)

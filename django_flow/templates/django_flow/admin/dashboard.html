@@ -1,0 +1,41 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static flow %}
+
+{% block extrastyle %}
+    {{ block.super }}
+{% endblock %}
+
+{% block extrajs %}
+    {{ block.super }}
+    {% flow_init %}
+    <script src="{{ STATIC_URL }}django_flow/admin/staff_notification.js"></script>
+    <script >
+        $(document).ready(function(flow)
+        {
+            window.flow.connect();
+        });
+    </script>
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+
+
+{% block content %}
+
+<div id="staff_notifications">
+
+</div>
+
+{% endblock %}
+
+
+{% block sidebar %}
+  <div id="content-related">
+
+  </div>
+{% endblock %}
