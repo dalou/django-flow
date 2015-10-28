@@ -1,6 +1,6 @@
 <div dir="ltr" style=" padding:20px 10px;">
     {% block header %}
-    <div style="text-align:center; border-bottom: 4px solid rgb(224, 201, 22); padding:10px 15px;" >
+    <div style="text-align:center; border-bottom: 4px solid rgb(104, 104, 104); padding:10px 15px;" >
         <i>
             <b>
                 <font face="verdana, sans-serif" size="4">
@@ -15,7 +15,7 @@
     <div style="text-align:justify;padding:36px 0px;">
         <font face="verdana, sans-serif" size="4">
             <p style="color:rgb(104, 104, 104);font-size:13px;line-height:14px;text-align:left;">
-                {% block content %}{% endblock content %}
+                {% block body %}{% endblock body %}
             </p>
         </font>
     </div>
@@ -23,11 +23,6 @@
         <font face="verdana, sans-serif">
             <p style="color: rgb(104, 104, 104);font-size: 14px;line-height:14px;text-align:left;">
                 {% block footer %}{% endblock footer %}
-
-                {% block footer_bis %}
-                Cordialement,<br />
-
-                {% endblock footer_bis %}
             </p>
         </font>
     </div>

@@ -1,7 +1,7 @@
-{% extends "django_flow/admin/email/base.html" %}
+{% extends layout %}
 
-{% block title %}{{ title }}{% endblock title %}
-{% block content %}
+{% block header %}{{ title }}{% endblock header %}
+{% block body %}
     {{ body }}
-{% endblock content %}
+{% endblock body %}
 {% block footer %}{% endblock footer %}

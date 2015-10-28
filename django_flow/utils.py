@@ -19,7 +19,13 @@ from django.core.mail import EmailMultiAlternatives
 from .models import *
 from . import settings
 
-def create_staff_notification(title, body=None, email_receivers=[], send_emails=True):
+def send_staff_notification(title, body=None,
+    send_emails=True,
+    email_title_prefix="[STAFF] ",
+    email_layout="django_flow/admin/email/base.html",
+    email_sender=settings.settings.DEFAULT_NO_REPLY_EMAIL,
+    email_receivers=[],
+    email_context={}):
 
     StaffNotification.objects.create(
         title=title,
@@ -29,12 +35,13 @@ def create_staff_notification(title, body=None, email_receivers=[], send_emails=
     if not email_receivers:
         email_receivers = settings.settings.STAFF_EMAILS.values()
 
-    send_templated_mail(
-        u'[STAFF] %s' % title,
-        settings.settings.DEFAULT_NO_REPLY_EMAIL,
+    send_template_email(
+        u'%s%s' % (email_title_prefix, title),
+        email_sender,
         email_receivers,
         template="django_flow/admin/email/staff_notification.html",
         context= {
+            'layout': email_layout,
             'title': title,
             'body': body,
         }
@@ -51,14 +58,14 @@ class HtmlTemplateEmail(EmailMultiAlternatives):
         self.attach_alternative(html, "text/html")
 
 
-def send_html_mail(subject, sender, receivers, html='', context={}, **kwargs):
+def send_html_email(subject, sender, receivers, html='', context={}, **kwargs):
     message = HtmlTemplateEmail(subject, html, sender, receivers, context, **kwargs)
     return message.send()
 
-def send_templated_mail(subject, sender, receivers, template=None, context={}, **kwargs):
+def send_template_email(subject, sender, receivers, template=None, context={}, **kwargs):
     html_template = get_template(template)
     context = Context(context)
     html = html_template.render(context)
-    return send_html_mail(subject, sender, receivers, html=html, context=context, **kwargs)
+    return send_html_email(subject, sender, receivers, html=html, context=context, **kwargs)
 
 
